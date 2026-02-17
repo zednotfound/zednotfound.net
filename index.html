@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐸</text></svg>">
+  <title>Zed Not Found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a3a5c 0%, #0d4a4a 40%, #1a6b5a 70%, #0d4a4a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Raleway', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #rain-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .content {
+      text-align: center;
+      color: white;
+      z-index: 10;
+      position: relative;
+    }
+
+    .line {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .title {
+      font-size: 4rem;
+      font-weight: 100;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      font-weight: 200;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+    }
+
+    .links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .links a {
+      color: rgba(255, 255, 255, 0.7);
+      transition: color 0.3s ease, transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .links a:hover {
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .links svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 768px) {
+      .title {
+        font-size: 2rem;
+        letter-spacing: 0.2em;
+      }
+
+      .subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="rain-canvas"></canvas>
+  
+  <div class="content">
+    <h1 class="line title">Zed Not Found</h1>
+    <p class="line subtitle">Creator / Developer / Maker</p>
+    <div class="line links">
+      <a href="https://www.roblox.com/users/41800504/profile" target="_blank" rel="noopener noreferrer" aria-label="Roblox">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.164 0L0 18.627l18.836 5.373L24 5.373 5.164 0zm9.086 14.066l-4.313-1.238 1.238-4.313 4.313 1.238-1.238 4.313z"/>
+        </svg>
+      </a>
+      <a href="https://github.com/zednotfound" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Rain particle effect
+    const canvas = document.getElementById('rain-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const waterLevel = 0.7; // Water starts at 70% down the screen
+
+    class Ripple {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 2;
+        this.maxRadius = Math.random() * 30 + 20;
+        this.opacity = 0.5;
+        this.speed = Math.random() * 1 + 0.5;
+      }
+
+      update() {
+        this.radius += this.speed;
+        this.opacity = 0.5 * (1 - this.radius / this.maxRadius);
+      }
+
+      draw() {
+        if (this.opacity <= 0) return;
+        ctx.beginPath();
+        ctx.ellipse(this.x, this.y + this.radius * 0.3, this.radius, this.radius * 0.4, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      isDead() {
+        return this.radius >= this.maxRadius;
+      }
+    }
+
+    const ripples = [];
+
+    class Raindrop {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * (canvas.width + 200);
+        this.y = Math.random() * -canvas.height;
+        this.length = Math.random() * 20 + 10;
+        this.speed = Math.random() * 5 + 8;
+        this.opacity = Math.random() * 0.3 + 0.1;
+        this.thickness = Math.random() * 1.5 + 0.5;
+        this.windSpeed = this.speed * 0.3;
+      }
+
+      update() {
+        this.y += this.speed;
+        this.x -= this.windSpeed;
+        
+        const waterY = canvas.height * waterLevel;
+        if (this.y >= waterY) {
+          // Create ripple at a random position in the water area (bottom 30%)
+          const rippleY = waterY + Math.random() * (canvas.height - waterY);
+          if (this.x >= 0 && this.x <= canvas.width) {
+            ripples.push(new Ripple(this.x, rippleY));
+          }
+          this.reset();
+        } else if (this.x < -20) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.length * 0.3, this.y + this.length);
+        ctx.strokeStyle = `rgba(174, 194, 224, ${this.opacity})`;
+        ctx.lineWidth = this.thickness;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    const raindrops = [];
+    const numDrops = 150;
+
+    for (let i = 0; i < numDrops; i++) {
+      raindrops.push(new Raindrop());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      raindrops.forEach(drop => {
+        drop.update();
+        drop.draw();
+      });
+
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        ripples[i].update();
+        ripples[i].draw();
+        if (ripples[i].isDead()) {
+          ripples.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Fade in text lines one by one
+    const lines = document.querySelectorAll('.line');
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        line.classList.add('visible');
+      }, 500 + index * 400);
+    });
+  </script>
+</body>
+</html>
